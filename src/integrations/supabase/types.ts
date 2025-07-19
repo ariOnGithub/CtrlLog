@@ -14,7 +14,155 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      game_logs: {
+        Row: {
+          created_at: string
+          finish_date: string | null
+          game_id: string
+          hours_played: number | null
+          id: string
+          platform: string | null
+          rating: number | null
+          review: string | null
+          start_date: string | null
+          status: string | null
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          finish_date?: string | null
+          game_id: string
+          hours_played?: number | null
+          id?: string
+          platform?: string | null
+          rating?: number | null
+          review?: string | null
+          start_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          finish_date?: string | null
+          game_id?: string
+          hours_played?: number | null
+          id?: string
+          platform?: string | null
+          rating?: number | null
+          review?: string | null
+          start_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_logs_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          developer: string | null
+          genres: string[] | null
+          id: string
+          igdb_id: number | null
+          platforms: string[] | null
+          publisher: string | null
+          release_year: number | null
+          title: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          developer?: string | null
+          genres?: string[] | null
+          id?: string
+          igdb_id?: number | null
+          platforms?: string[] | null
+          publisher?: string | null
+          release_year?: number | null
+          title: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          developer?: string | null
+          genres?: string[] | null
+          id?: string
+          igdb_id?: number | null
+          platforms?: string[] | null
+          publisher?: string | null
+          release_year?: number | null
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

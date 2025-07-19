@@ -44,7 +44,10 @@ const Index = () => {
             <p className="text-xl lg:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Discover, log, and showcase your entire gaming history. Connect with fellow gamers and never lose track of your adventures.
             </p>
-            <Button className="hero-button text-lg px-10 py-6">
+            <Button 
+              className="hero-button text-lg px-10 py-6"
+              onClick={() => window.location.href = '/auth'}
+            >
               Get Started for Free
             </Button>
           </div>
@@ -150,7 +153,10 @@ const Index = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
             Join thousands of gamers who are already tracking their adventures with CtrlLog
           </p>
-          <Button className="hero-button text-lg px-10 py-6">
+          <Button 
+            className="hero-button text-lg px-10 py-6"
+            onClick={() => window.location.href = '/auth'}
+          >
             Create Your Account
           </Button>
         </div>
