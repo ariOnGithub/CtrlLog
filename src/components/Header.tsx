@@ -39,7 +39,10 @@ const Header = () => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button 
+                  variant="ghost" 
+                  className="relative h-10 px-3 rounded-full bg-muted/20 hover:bg-muted/40 transition-colors border border-border/50 hover:border-primary/30"
+                >
                   <div className="flex items-center space-x-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="" />
