@@ -38,19 +38,34 @@ const Index = () => {
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
           <div className="max-w-3xl">
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-              Track Your Games.{" "}
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Share Your Journey.
-              </span>
+              {user ? (
+                <>
+                  Welcome back,{" "}
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {user.user_metadata?.username || 'Gamer'}!
+                  </span>
+                </>
+              ) : (
+                <>
+                  Track Your Games.{" "}
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Share Your Journey.
+                  </span>
+                </>
+              )}
             </h1>
             <p className="text-xl lg:text-2xl text-muted-foreground mb-8 leading-relaxed">
-              Discover, log, and showcase your entire gaming history. Connect with fellow gamers and never lose track of your adventures.
+              {user ? (
+                "Ready to continue your gaming adventures? Check out your personalized dashboard and discover what's trending."
+              ) : (
+                "Discover, log, and showcase your entire gaming history. Connect with fellow gamers and never lose track of your adventures."
+              )}
             </p>
             <Button 
               className="hero-button text-lg px-10 py-6"
               onClick={() => window.location.href = user ? '/dashboard' : '/auth'}
             >
-              {user ? 'Discover Features' : 'Get Started for Free'}
+              {user ? 'Your Dashboard' : 'Get Started for Free'}
             </Button>
           </div>
         </div>

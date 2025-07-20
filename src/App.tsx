@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
+import Overview from "./pages/Overview";
 import Profile from "./pages/Profile";
 import LogGame from "./pages/LogGame";
 import NotFound from "./pages/NotFound";
@@ -63,7 +63,7 @@ const App = () => (
             } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Overview />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={

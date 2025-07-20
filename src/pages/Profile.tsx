@@ -76,22 +76,24 @@ const Profile = () => {
                     {profile.username.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <Button
-                  variant={following ? "secondary" : "default"}
-                  onClick={() => setFollowing(!following)}
-                  className={following ? "" : "hero-button"}
-                >
-                  {following ? 'Following' : 'Follow'}
-                </Button>
+                <div className="w-full md:w-auto">
+                  <Button
+                    variant={following ? "secondary" : "default"}
+                    onClick={() => setFollowing(!following)}
+                    className={`w-full ${following ? "" : "hero-button"}`}
+                  >
+                    {following ? 'Following' : 'Follow'}
+                  </Button>
+                </div>
               </div>
 
               {/* Profile Details */}
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                  <div>
+                  <div className="w-full">
                     <h1 className="text-3xl font-bold mb-1">{profile.displayName}</h1>
                     <p className="text-lg text-muted-foreground mb-2">@{profile.username}</p>
-                    <p className="text-foreground mb-4 max-w-2xl">{profile.bio}</p>
+                    <p className="text-foreground mb-4 w-full">{profile.bio}</p>
                   </div>
                 </div>
 
