@@ -58,7 +58,7 @@ const Overview = () => {
       
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
-        <div className="mb-8 text-center">
+        <div className="mb-8 max-w-4xl">
           <h1 className="text-3xl lg:text-4xl font-bold mb-2">
             Welcome back, {user?.user_metadata?.username || 'Gamer'}!
           </h1>
@@ -67,111 +67,98 @@ const Overview = () => {
           </p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="mb-8 flex justify-center">
-          <Button 
-            onClick={() => navigate('/log-game')}
-            className="hero-button text-lg px-8 py-6"
-          >
-            <Plus className="mr-2 h-5 w-5" />
-            🎮 Log a New Game
-          </Button>
+        {/* Overview Section */}
+        <div className="mb-8 max-w-6xl">
+          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+            {/* Stats Panel */}
+            <div className="lg:col-span-1">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <TrendingUp className="mr-2 h-5 w-5 text-primary" />
+                    Your Stats
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Games Logged</span>
+                    <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
+                      {stats.gamesLogged}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Hours Tracked</span>
+                    <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
+                      {stats.hoursTracked}h
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Avg Rating</span>
+                    <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
+                      {stats.avgRating}/5
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Activity Feed */}
+            <div className="lg:col-span-2">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Clock className="mr-2 h-5 w-5 text-primary" />
+                    Recent Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentActivity.map((activity, index) => {
+                      const IconComponent = activity.icon;
+                      return (
+                        <div key={index} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
+                          <div className="p-2 rounded-full bg-primary/10">
+                            <IconComponent className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium">{activity.content}</p>
+                            <p className="text-xs text-muted-foreground">{activity.time}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="actions" className="flex items-center gap-2">
-              <Gamepad2 className="h-4 w-4" />
-              Quick Actions
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="mt-8">
-            <div className="grid lg:grid-cols-3 gap-8">
-              {/* Stats Panel */}
-              <div className="lg:col-span-1">
-                <Card className="glass-card">
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <TrendingUp className="mr-2 h-5 w-5 text-primary" />
-                      Your Stats
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Games Logged</span>
-                      <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
-                        {stats.gamesLogged}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Hours Tracked</span>
-                      <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
-                        {stats.hoursTracked}h
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Avg Rating</span>
-                      <Badge variant="secondary" className="text-lg bg-accent text-accent-foreground">
-                        {stats.avgRating}/5
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Activity Feed */}
-              <div className="lg:col-span-2">
-                <Card className="glass-card">
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <Clock className="mr-2 h-5 w-5 text-primary" />
-                      Recent Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentActivity.map((activity, index) => {
-                        const IconComponent = activity.icon;
-                        return (
-                          <div key={index} className="flex items-start space-x-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
-                            <div className="p-2 rounded-full bg-primary/10">
-                              <IconComponent className="h-4 w-4 text-primary" />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-sm font-medium">{activity.content}</p>
-                              <p className="text-xs text-muted-foreground">{activity.time}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="actions" className="mt-8">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quickActions.map((action, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="h-24 flex flex-col items-center justify-center space-y-2 hover:bg-muted/50 hover:border-primary/50 transition-colors"
-                  onClick={() => navigate(action.path)}
-                >
-                  <action.icon className="h-6 w-6" />
-                  <span className="text-sm font-medium">{action.name}</span>
-                </Button>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Quick Actions */}
+        <div className="max-w-6xl">
+          <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
+          <div className="flex flex-wrap gap-4">
+            <Button 
+              onClick={() => navigate('/log-game')}
+              className="hero-button text-lg px-8 py-6"
+            >
+              <Plus className="mr-2 h-5 w-5" />
+              🎮 Log a New Game
+            </Button>
+            
+            {quickActions.map((action, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="h-16 px-6 flex items-center space-x-2 hover:bg-muted/50 hover:border-primary/50 transition-colors"
+                onClick={() => navigate(action.path)}
+              >
+                <action.icon className="h-5 w-5" />
+                <span className="font-medium">{action.name}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

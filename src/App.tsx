@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Overview from "./pages/Overview";
 import Profile from "./pages/Profile";
 import LogGame from "./pages/LogGame";
+import Discover from "./pages/Discover";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -76,6 +77,7 @@ const App = () => (
                 <LogGame />
               </ProtectedRoute>
             } />
+            <Route path="/discover" element={<Discover />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

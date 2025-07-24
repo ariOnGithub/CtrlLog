@@ -69,18 +69,18 @@ const Profile = () => {
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row items-start gap-6">
               {/* Avatar and Basic Info */}
-              <div className="flex flex-col items-center md:items-start">
-                <Avatar className="h-24 w-24 mb-4">
+              <div className="flex items-start gap-4">
+                <Avatar className="h-24 w-24">
                   <AvatarImage src="" />
                   <AvatarFallback className="text-2xl bg-primary/10 text-primary">
                     {profile.username.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="w-full md:w-auto">
+                <div className="mt-2">
                   <Button
                     variant={following ? "secondary" : "default"}
                     onClick={() => setFollowing(!following)}
-                    className={`w-full ${following ? "" : "hero-button"}`}
+                    className={`${following ? "" : "hero-button"}`}
                   >
                     {following ? 'Following' : 'Follow'}
                   </Button>
