@@ -39,9 +39,12 @@ const Discover = () => {
   ];
 
   const recommendedGames = user ? [
-    { id: 14, title: 'Final Fantasy XVI', image: game2, rating: 4.5, year: '2023', genre: 'rpg', reason: 'Based on your love for RPGs' },
+    { id: 14, title: 'Final Fantasy XVI', image: game2, rating: 4.5, year: '2023', genre: 'rpg', reason: 'Based on your love for RPGs', featured: true, featuredReason: 'Epic fantasy adventure' },
     { id: 15, title: 'Diablo IV', image: game3, rating: 4.2, year: '2023', genre: 'rpg', reason: 'Similar to games you\'ve rated highly' },
     { id: 16, title: 'Street Fighter 6', image: game1, rating: 4.6, year: '2023', genre: 'fighting', reason: 'Trending in your network' },
+    { id: 17, title: 'The Witcher 3', image: game2, rating: 4.9, year: '2015', genre: 'rpg', reason: 'Perfect for RPG lovers', featured: true, featuredReason: 'Community favorite' },
+    { id: 18, title: 'Red Dead Redemption 2', image: game3, rating: 4.7, year: '2018', genre: 'action', reason: 'Based on your adventure preferences' },
+    { id: 19, title: 'Cyberpunk 2077', image: game1, rating: 4.2, year: '2020', genre: 'rpg', reason: 'Futuristic RPG experience' },
   ] : [];
 
   const genres = [
@@ -74,24 +77,26 @@ const Discover = () => {
           </p>
         </div>
 
-        {/* Search and Filters */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search games..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
-            />
+        {/* Featured Games - Show for new users */}
+        {!user && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6">Featured Games</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {featuredGames.slice(0, 6).map((game) => (
+                <GameTile
+                  key={game.id}
+                  title={game.title}
+                  image={game.image}
+                  rating={game.rating}
+                  year={game.year}
+                />
+              ))}
+            </div>
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            Filters
-          </Button>
-        </div>
+        )}
 
         {user && recommendedGames.length > 0 && (
-          <div className="mb-12">
+          <div className="mb-8">
             <Card className="glass-card">
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -100,16 +105,21 @@ const Discover = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                   {recommendedGames.map((game) => (
-                    <div key={game.id} className="flex flex-col">
+                    <div key={game.id} className="flex flex-col relative">
                       <GameTile
                         title={game.title}
                         image={game.image}
                         rating={game.rating}
                         year={game.year}
                       />
-                      <p className="text-xs text-muted-foreground mt-2 text-center">{game.reason}</p>
+                      {game.featured && (
+                        <div className="absolute top-2 left-2 bg-primary/90 text-primary-foreground text-xs px-2 py-1 rounded-md z-10">
+                          Featured: {game.featuredReason}
+                        </div>
+                      )}
+                      <p className="text-sm text-muted-foreground mt-2 text-center">{game.reason}</p>
                     </div>
                   ))}
                 </div>
@@ -118,13 +128,76 @@ const Discover = () => {
           </div>
         )}
 
+        {/* Search and Filters */}
+        <div className="mb-8">
+          <div className="flex flex-col gap-4">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search games..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+              />
+            </div>
+            
+            {/* Filter Row */}
+            <div className="flex flex-wrap gap-3">
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-muted-foreground">Year:</label>
+                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
+                  <option>All Years</option>
+                  <option>2024</option>
+                  <option>2023</option>
+                  <option>2022</option>
+                  <option>2021</option>
+                  <option>2020</option>
+                  <option>2015-2019</option>
+                  <option>Before 2015</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-muted-foreground">Reviewed by:</label>
+                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
+                  <option>All Games</option>
+                  <option>IGN Reviews</option>
+                  <option>GameSpot Reviews</option>
+                  <option>Metacritic 90+</option>
+                  <option>PC Gamer Reviews</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-muted-foreground">CtrlLog Rating:</label>
+                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
+                  <option>All Ratings</option>
+                  <option>4.5+ Stars</option>
+                  <option>4.0+ Stars</option>
+                  <option>3.5+ Stars</option>
+                  <option>3.0+ Stars</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium text-muted-foreground">Genre:</label>
+                <select 
+                  className="px-3 py-2 border border-input rounded-md text-sm bg-background"
+                  value={selectedGenre} 
+                  onChange={(e) => setSelectedGenre(e.target.value)}
+                >
+                  <option value="all">All Genres</option>
+                  {genres.slice(1).map(genre => (
+                    <option key={genre.id} value={genre.id}>{genre.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Main Content Tabs */}
-        <Tabs defaultValue="featured" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
-            <TabsTrigger value="featured" className="flex items-center gap-2">
-              <Star className="h-4 w-4" />
-              Featured
-            </TabsTrigger>
+        <Tabs defaultValue="latest" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 max-w-lg">
             <TabsTrigger value="latest" className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
               Latest
@@ -138,20 +211,6 @@ const Discover = () => {
               By Genre
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="featured" className="mt-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {featuredGames.map((game) => (
-                <GameTile
-                  key={game.id}
-                  title={game.title}
-                  image={game.image}
-                  rating={game.rating}
-                  year={game.year}
-                />
-              ))}
-            </div>
-          </TabsContent>
 
           <TabsContent value="latest" className="mt-8">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
