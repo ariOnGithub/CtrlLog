@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Star, TrendingUp, Clock, Filter, Search, Heart, StarHalf } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Star, TrendingUp, Clock, Filter, Search, Heart, StarHalf, ChevronDown } from 'lucide-react';
 import Header from '@/components/Header';
 import GameTile from '@/components/GameTile';
 import game1 from "@/assets/game-1.jpg";
@@ -13,11 +14,12 @@ import game3 from "@/assets/game-3.jpg";
 
 const Discover = () => {
   const { user } = useAuth();
-  const [selectedGenre, setSelectedGenre] = useState('all');
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(['all']);
   const [selectedYearRange, setSelectedYearRange] = useState('all');
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingFilter, setRatingFilter] = useState('above');
   const [searchQuery, setSearchQuery] = useState('');
+  const [hoveredStar, setHoveredStar] = useState(0);
 
   // Mock data for games
   const featuredGames = [
@@ -62,9 +64,9 @@ const Discover = () => {
     { id: 'fighting', name: 'Fighting', count: 10 },
   ];
 
-  const filteredGames = selectedGenre === 'all' 
+  const filteredGames = selectedGenres.includes('all') 
     ? featuredGames 
-    : featuredGames.filter(game => game.genre === selectedGenre);
+    : featuredGames.filter(game => selectedGenres.includes(game.genre));
 
   return (
     <div className="min-h-screen bg-background">
@@ -144,65 +146,141 @@ const Discover = () => {
             {/* Filters Row */}
             <div className="flex flex-wrap items-center gap-4">
               {/* Year Range Dropdown */}
-              <select
-                value={selectedYearRange}
-                onChange={(e) => setSelectedYearRange(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px]"
-              >
-                <option value="all">All time</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-                <option value="2015-2019">2015-2019</option>
-                <option value="before-2015">Before 2015</option>
-              </select>
-
-              {/* Rating Dropdown */}
-              <div className="relative">
-                <select
-                  value={selectedRating}
-                  onChange={(e) => setSelectedRating(Number(e.target.value))}
-                  className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px] appearance-none cursor-pointer"
-                >
-                  <option value={0}>Any rating</option>
-                  <option value={0.5}>0.5+ stars</option>
-                  <option value={1}>1+ stars</option>
-                  <option value={1.5}>1.5+ stars</option>
-                  <option value={2}>2+ stars</option>
-                  <option value={2.5}>2.5+ stars</option>
-                  <option value={3}>3+ stars</option>
-                  <option value={3.5}>3.5+ stars</option>
-                  <option value={4}>4+ stars</option>
-                  <option value={4.5}>4.5+ stars</option>
-                  <option value={5}>5 stars</option>
-                </select>
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star 
-                        key={star}
-                        className={`h-3 w-3 ${selectedRating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                      />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-between min-w-[130px]">
+                    {selectedYearRange === 'all' ? 'All time' : 
+                     selectedYearRange === 'before-2015' ? 'Before 2015' : selectedYearRange}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-2" align="start">
+                  <div className="space-y-1">
+                    {['all', '2024', '2023', '2022', '2021', '2020', '2015-2019', 'before-2015'].map((range) => (
+                      <button
+                        key={range}
+                        onClick={() => setSelectedYearRange(range)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-accent ${
+                          selectedYearRange === range ? 'bg-accent' : ''
+                        }`}
+                      >
+                        {range === 'all' ? 'All time' : range === 'before-2015' ? 'Before 2015' : range}
+                      </button>
                     ))}
                   </div>
-                </div>
-              </div>
+                </PopoverContent>
+              </Popover>
+
+              {/* Rating Dropdown */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-between min-w-[150px]">
+                    {selectedRating === 0 ? 'Any rating' : `Rating ${ratingFilter === 'above' ? '≥' : '≤'} ${selectedRating} stars`}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-4" align="start">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <div key={star} className="flex">
+                          <button
+                            onClick={() => setSelectedRating(star - 0.5)}
+                            onMouseEnter={() => setHoveredStar(star - 0.5)}
+                            onMouseLeave={() => setHoveredStar(0)}
+                            className="p-1"
+                          >
+                            <StarHalf 
+                              className={`h-5 w-5 ${
+                                (hoveredStar >= star - 0.5 || selectedRating >= star - 0.5) 
+                                ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                              }`}
+                            />
+                          </button>
+                          <button
+                            onClick={() => setSelectedRating(star)}
+                            onMouseEnter={() => setHoveredStar(star)}
+                            onMouseLeave={() => setHoveredStar(0)}
+                            className="p-1"
+                          >
+                            <Star 
+                              className={`h-5 w-5 ${
+                                (hoveredStar >= star || selectedRating >= star) 
+                                ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    {selectedRating > 0 && (
+                      <div className="flex gap-2 justify-center">
+                        <Button
+                          variant={ratingFilter === 'above' ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setRatingFilter('above')}
+                        >
+                          ≥ {selectedRating}
+                        </Button>
+                        <Button
+                          variant={ratingFilter === 'below' ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setRatingFilter('below')}
+                        >
+                          ≤ {selectedRating}
+                        </Button>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setSelectedRating(0)}
+                      className="w-full text-center px-3 py-2 rounded-md text-sm hover:bg-accent"
+                    >
+                      Any rating
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* Genre Dropdown */}
-              <select
-                value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px]"
-              >
-                <option value="all">All genres</option>
-                {genres.filter(g => g.id !== 'all').map((genre) => (
-                  <option key={genre.id} value={genre.id}>
-                    {genre.name} ({genre.count})
-                  </option>
-                ))}
-              </select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="justify-between min-w-[130px]">
+                    {selectedGenres.includes('all') ? 'All genres' : 
+                     selectedGenres.length === 1 ? genres.find(g => g.id === selectedGenres[0])?.name :
+                     `${selectedGenres.length} genres`}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-2" align="start">
+                  <div className="space-y-1">
+                    {genres.map((genre) => (
+                      <button
+                        key={genre.id}
+                        onClick={() => {
+                          if (genre.id === 'all') {
+                            setSelectedGenres(['all']);
+                          } else {
+                            const newSelection = selectedGenres.includes('all') 
+                              ? [genre.id]
+                              : selectedGenres.includes(genre.id)
+                                ? selectedGenres.filter(id => id !== genre.id)
+                                : [...selectedGenres.filter(id => id !== 'all'), genre.id];
+                            setSelectedGenres(newSelection.length === 0 ? ['all'] : newSelection);
+                          }
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-accent flex items-center justify-between ${
+                          selectedGenres.includes(genre.id) ? 'bg-accent' : ''
+                        }`}
+                      >
+                        <span>{genre.name}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {genre.count}
+                        </Badge>
+                      </button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* Apply Filters Button */}
               <Button className="px-6">
@@ -265,9 +343,20 @@ const Discover = () => {
                 {genres.map((genre) => (
                   <Button
                     key={genre.id}
-                    variant={selectedGenre === genre.id ? "default" : "outline"}
+                    variant={selectedGenres.includes(genre.id) ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setSelectedGenre(genre.id)}
+                    onClick={() => {
+                      if (genre.id === 'all') {
+                        setSelectedGenres(['all']);
+                      } else {
+                        const newSelection = selectedGenres.includes('all') 
+                          ? [genre.id]
+                          : selectedGenres.includes(genre.id)
+                            ? selectedGenres.filter(id => id !== genre.id)
+                            : [...selectedGenres.filter(id => id !== 'all'), genre.id];
+                        setSelectedGenres(newSelection.length === 0 ? ['all'] : newSelection);
+                      }
+                    }}
                     className="flex items-center gap-2"
                   >
                     {genre.name}
