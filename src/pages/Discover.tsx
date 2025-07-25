@@ -141,100 +141,71 @@ const Discover = () => {
               />
             </div>
             
-            {/* Filters */}
-            <div className="space-y-4">
-              {/* Year Range Filter */}
-              <div>
-                <label className="text-sm font-medium text-muted-foreground mb-2 block">Year Range:</label>
-                <div className="flex flex-wrap gap-2">
-                  {['all', '2024', '2023', '2022', '2021', '2020', '2015-2019', 'before-2015'].map((range) => (
-                    <Button
-                      key={range}
-                      variant={selectedYearRange === range ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedYearRange(range)}
-                    >
-                      {range === 'all' ? 'All Years' : range === 'before-2015' ? 'Before 2015' : range}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+            {/* Filters Row */}
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Year Range Dropdown */}
+              <select
+                value={selectedYearRange}
+                onChange={(e) => setSelectedYearRange(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px]"
+              >
+                <option value="all">All time</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2015-2019">2015-2019</option>
+                <option value="before-2015">Before 2015</option>
+              </select>
 
-              {/* CtrlLog Rating Filter */}
-              <div>
-                <label className="text-sm font-medium text-muted-foreground mb-2 block">CtrlLog Rating:</label>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <div key={star} className="flex">
-                          <button
-                            onClick={() => setSelectedRating(star - 0.5)}
-                            className="p-1"
-                          >
-                            <StarHalf 
-                              className={`h-4 w-4 ${selectedRating >= star - 0.5 ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                            />
-                          </button>
-                          <button
-                            onClick={() => setSelectedRating(star)}
-                            className="p-1"
-                          >
-                            <Star 
-                              className={`h-4 w-4 ${selectedRating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-                            />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <span className="text-sm text-muted-foreground ml-2">
-                      {selectedRating > 0 ? `${selectedRating} stars` : 'Any rating'}
-                    </span>
+              {/* Rating Dropdown */}
+              <div className="relative">
+                <select
+                  value={selectedRating}
+                  onChange={(e) => setSelectedRating(Number(e.target.value))}
+                  className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px] appearance-none cursor-pointer"
+                >
+                  <option value={0}>Any rating</option>
+                  <option value={0.5}>0.5+ stars</option>
+                  <option value={1}>1+ stars</option>
+                  <option value={1.5}>1.5+ stars</option>
+                  <option value={2}>2+ stars</option>
+                  <option value={2.5}>2.5+ stars</option>
+                  <option value={3}>3+ stars</option>
+                  <option value={3.5}>3.5+ stars</option>
+                  <option value={4}>4+ stars</option>
+                  <option value={4.5}>4.5+ stars</option>
+                  <option value={5}>5 stars</option>
+                </select>
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star 
+                        key={star}
+                        className={`h-3 w-3 ${selectedRating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                      />
+                    ))}
                   </div>
-                  {selectedRating > 0 && (
-                    <div className="flex gap-2">
-                      <Button
-                        variant={ratingFilter === 'above' ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setRatingFilter('above')}
-                      >
-                        Above {selectedRating}
-                      </Button>
-                      <Button
-                        variant={ratingFilter === 'below' ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setRatingFilter('below')}
-                      >
-                        Below {selectedRating}
-                      </Button>
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {/* Genre Filter */}
-              <div>
-                <label className="text-sm font-medium text-muted-foreground mb-2 block">Genre:</label>
-                <div className="flex flex-wrap gap-2">
-                  {genres.map((genre) => (
-                    <Button
-                      key={genre.id}
-                      variant={selectedGenre === genre.id ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedGenre(genre.id)}
-                      className="flex items-center gap-2"
-                    >
-                      {genre.name}
-                      <Badge variant="secondary" className="text-xs">
-                        {genre.count}
-                      </Badge>
-                    </Button>
-                  ))}
-                </div>
-              </div>
+              {/* Genre Dropdown */}
+              <select
+                value={selectedGenre}
+                onChange={(e) => setSelectedGenre(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-input bg-background text-sm min-w-[120px]"
+              >
+                <option value="all">All genres</option>
+                {genres.filter(g => g.id !== 'all').map((genre) => (
+                  <option key={genre.id} value={genre.id}>
+                    {genre.name} ({genre.count})
+                  </option>
+                ))}
+              </select>
 
-              {/* Search Button */}
-              <Button className="w-fit">
+              {/* Apply Filters Button */}
+              <Button className="px-6">
                 <Search className="mr-2 h-4 w-4" />
                 Apply Filters
               </Button>
