@@ -27,7 +27,11 @@ const Header = () => {
           >
             Home
           </Button>
-          <Button variant="ghost" className="nav-link">
+          <Button 
+            variant="ghost" 
+            className="nav-link"
+            onClick={() => navigate('/discover')}
+          >
             Discover
           </Button>
           <Button variant="ghost" className="nav-link">
@@ -63,7 +67,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                   <Gamepad2 className="mr-2 h-4 w-4" />
-                  <span>Overview</span>
+                  <span>Dashboard</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/settings')}>
                   <Settings className="mr-2 h-4 w-4" />

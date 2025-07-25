@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Star, TrendingUp, Clock, Filter, Search, Heart } from 'lucide-react';
+import { Star, TrendingUp, Clock, Filter, Search, Heart, StarHalf } from 'lucide-react';
 import Header from '@/components/Header';
 import GameTile from '@/components/GameTile';
 import game1 from "@/assets/game-1.jpg";
@@ -14,6 +14,10 @@ import game3 from "@/assets/game-3.jpg";
 const Discover = () => {
   const { user } = useAuth();
   const [selectedGenre, setSelectedGenre] = useState('all');
+  const [selectedYearRange, setSelectedYearRange] = useState('all');
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [ratingFilter, setRatingFilter] = useState('above');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data for games
   const featuredGames = [
@@ -39,10 +43,10 @@ const Discover = () => {
   ];
 
   const recommendedGames = user ? [
-    { id: 14, title: 'Final Fantasy XVI', image: game2, rating: 4.5, year: '2023', genre: 'rpg', reason: 'Based on your love for RPGs', featured: true, featuredReason: 'Epic fantasy adventure' },
+    { id: 14, title: 'Final Fantasy XVI', image: game2, rating: 4.5, year: '2023', genre: 'rpg', reason: 'Featured: Epic fantasy adventure' },
     { id: 15, title: 'Diablo IV', image: game3, rating: 4.2, year: '2023', genre: 'rpg', reason: 'Similar to games you\'ve rated highly' },
     { id: 16, title: 'Street Fighter 6', image: game1, rating: 4.6, year: '2023', genre: 'fighting', reason: 'Trending in your network' },
-    { id: 17, title: 'The Witcher 3', image: game2, rating: 4.9, year: '2015', genre: 'rpg', reason: 'Perfect for RPG lovers', featured: true, featuredReason: 'Community favorite' },
+    { id: 17, title: 'The Witcher 3', image: game2, rating: 4.9, year: '2015', genre: 'rpg', reason: 'Featured: Community favorite' },
     { id: 18, title: 'Red Dead Redemption 2', image: game3, rating: 4.7, year: '2018', genre: 'action', reason: 'Based on your adventure preferences' },
     { id: 19, title: 'Cyberpunk 2077', image: game1, rating: 4.2, year: '2020', genre: 'rpg', reason: 'Futuristic RPG experience' },
   ] : [];
@@ -106,20 +110,15 @@ const Discover = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                  {recommendedGames.map((game) => (
-                    <div key={game.id} className="flex flex-col relative">
+                  {recommendedGames.slice(0, 6).map((game) => (
+                    <div key={game.id} className="flex flex-col">
                       <GameTile
                         title={game.title}
                         image={game.image}
                         rating={game.rating}
                         year={game.year}
                       />
-                      {game.featured && (
-                        <div className="absolute top-2 left-2 bg-primary/90 text-primary-foreground text-xs px-2 py-1 rounded-md z-10">
-                          Featured: {game.featuredReason}
-                        </div>
-                      )}
-                      <p className="text-sm text-muted-foreground mt-2 text-center">{game.reason}</p>
+                      <p className="text-base text-muted-foreground mt-2 text-center">{game.reason}</p>
                     </div>
                   ))}
                 </div>
@@ -130,67 +129,115 @@ const Discover = () => {
 
         {/* Search and Filters */}
         <div className="mb-8">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search games..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
               />
             </div>
             
-            {/* Filter Row */}
-            <div className="flex flex-wrap gap-3">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">Year:</label>
-                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
-                  <option>All Years</option>
-                  <option>2024</option>
-                  <option>2023</option>
-                  <option>2022</option>
-                  <option>2021</option>
-                  <option>2020</option>
-                  <option>2015-2019</option>
-                  <option>Before 2015</option>
-                </select>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">Reviewed by:</label>
-                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
-                  <option>All Games</option>
-                  <option>IGN Reviews</option>
-                  <option>GameSpot Reviews</option>
-                  <option>Metacritic 90+</option>
-                  <option>PC Gamer Reviews</option>
-                </select>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">CtrlLog Rating:</label>
-                <select className="px-3 py-2 border border-input rounded-md text-sm bg-background">
-                  <option>All Ratings</option>
-                  <option>4.5+ Stars</option>
-                  <option>4.0+ Stars</option>
-                  <option>3.5+ Stars</option>
-                  <option>3.0+ Stars</option>
-                </select>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium text-muted-foreground">Genre:</label>
-                <select 
-                  className="px-3 py-2 border border-input rounded-md text-sm bg-background"
-                  value={selectedGenre} 
-                  onChange={(e) => setSelectedGenre(e.target.value)}
-                >
-                  <option value="all">All Genres</option>
-                  {genres.slice(1).map(genre => (
-                    <option key={genre.id} value={genre.id}>{genre.name}</option>
+            {/* Filters */}
+            <div className="space-y-4">
+              {/* Year Range Filter */}
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">Year Range:</label>
+                <div className="flex flex-wrap gap-2">
+                  {['all', '2024', '2023', '2022', '2021', '2020', '2015-2019', 'before-2015'].map((range) => (
+                    <Button
+                      key={range}
+                      variant={selectedYearRange === range ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedYearRange(range)}
+                    >
+                      {range === 'all' ? 'All Years' : range === 'before-2015' ? 'Before 2015' : range}
+                    </Button>
                   ))}
-                </select>
+                </div>
               </div>
+
+              {/* CtrlLog Rating Filter */}
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">CtrlLog Rating:</label>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <div key={star} className="flex">
+                          <button
+                            onClick={() => setSelectedRating(star - 0.5)}
+                            className="p-1"
+                          >
+                            <StarHalf 
+                              className={`h-4 w-4 ${selectedRating >= star - 0.5 ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                            />
+                          </button>
+                          <button
+                            onClick={() => setSelectedRating(star)}
+                            className="p-1"
+                          >
+                            <Star 
+                              className={`h-4 w-4 ${selectedRating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground ml-2">
+                      {selectedRating > 0 ? `${selectedRating} stars` : 'Any rating'}
+                    </span>
+                  </div>
+                  {selectedRating > 0 && (
+                    <div className="flex gap-2">
+                      <Button
+                        variant={ratingFilter === 'above' ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setRatingFilter('above')}
+                      >
+                        Above {selectedRating}
+                      </Button>
+                      <Button
+                        variant={ratingFilter === 'below' ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setRatingFilter('below')}
+                      >
+                        Below {selectedRating}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Genre Filter */}
+              <div>
+                <label className="text-sm font-medium text-muted-foreground mb-2 block">Genre:</label>
+                <div className="flex flex-wrap gap-2">
+                  {genres.map((genre) => (
+                    <Button
+                      key={genre.id}
+                      variant={selectedGenre === genre.id ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedGenre(genre.id)}
+                      className="flex items-center gap-2"
+                    >
+                      {genre.name}
+                      <Badge variant="secondary" className="text-xs">
+                        {genre.count}
+                      </Badge>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Search Button */}
+              <Button className="w-fit">
+                <Search className="mr-2 h-4 w-4" />
+                Apply Filters
+              </Button>
             </div>
           </div>
         </div>
