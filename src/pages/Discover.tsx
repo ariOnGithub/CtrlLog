@@ -166,32 +166,32 @@ const Discover = () => {
                 <PopoverContent className="w-auto p-4" align="start">
                   <div className="space-y-4">
                     <div className="text-sm font-semibold">Year Range</div>
-                    <div className="flex gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">From</label>
-                        <select
-                          value={yearFrom}
-                          onChange={(e) => setYearFrom(Number(e.target.value))}
-                          className="w-24 p-2 rounded border border-input bg-background"
-                        >
-                          {yearOptions.map((year) => (
-                            <option key={year} value={year}>{year}</option>
-                          ))}
-                        </select>
+                      <div className="flex gap-6">
+                        <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground">From</label>
+                          <select
+                            value={yearFrom}
+                            onChange={(e) => setYearFrom(Number(e.target.value))}
+                            className="w-24 p-2 rounded border border-input bg-background"
+                          >
+                            {yearOptions.map((year) => (
+                              <option key={year} value={year}>{year}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="space-y-3">
+                          <label className="text-sm font-medium text-foreground">To</label>
+                          <select
+                            value={yearTo}
+                            onChange={(e) => setYearTo(Number(e.target.value))}
+                            className="w-24 p-2 rounded border border-input bg-background"
+                          >
+                            {yearOptions.map((year) => (
+                              <option key={year} value={year}>{year}</option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-foreground">To</label>
-                        <select
-                          value={yearTo}
-                          onChange={(e) => setYearTo(Number(e.target.value))}
-                          className="w-24 p-2 rounded border border-input bg-background"
-                        >
-                          {yearOptions.map((year) => (
-                            <option key={year} value={year}>{year}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -294,8 +294,8 @@ const Discover = () => {
                           }}
                           className={`px-4 py-3 rounded-full text-sm font-medium transition-colors ${
                             selectedGenres.includes(genre.id) 
-                              ? 'bg-green-500 text-white hover:bg-green-600' 
-                              : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                              ? 'bg-green-500 text-white hover:bg-green-700' 
+                              : 'bg-gray-200 text-gray-600 hover:bg-gray-400'
                           }`}
                         >
                           {genre.name}
@@ -305,13 +305,13 @@ const Discover = () => {
                     <div className="flex gap-2 pt-2 border-t">
                       <button
                         onClick={() => setSelectedGenres(genres.map(g => g.id))}
-                        className="px-3 py-1 text-xs rounded hover:bg-accent"
+                        className="px-3 py-1 text-sm rounded hover:bg-accent"
                       >
                         Select All
                       </button>
                       <button
                         onClick={() => setSelectedGenres([])}
-                        className="px-3 py-1 text-xs rounded hover:bg-accent"
+                        className="px-3 py-1 text-sm rounded hover:bg-accent"
                       >
                         Clear All
                       </button>
