@@ -14,12 +14,33 @@ import game3 from "@/assets/game-3.jpg";
 
 const Discover = () => {
   const { user } = useAuth();
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(['all']);
-  const [selectedYearRange, setSelectedYearRange] = useState('all');
+  const currentYear = new Date().getFullYear();
+  
+  // Define genres first
+  const genres = [
+    { id: 'rpg', name: 'RPG', count: 45 },
+    { id: 'action', name: 'Action', count: 38 },
+    { id: 'adventure', name: 'Adventure', count: 22 },
+    { id: 'racing', name: 'Racing', count: 15 },
+    { id: 'horror', name: 'Horror', count: 12 },
+    { id: 'platformer', name: 'Platformer', count: 8 },
+    { id: 'fighting', name: 'Fighting', count: 10 },
+  ];
+
+  // State variables
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(genres.map(g => g.id));
+  const [yearFrom, setYearFrom] = useState(currentYear);
+  const [yearTo, setYearTo] = useState(currentYear);
   const [selectedRating, setSelectedRating] = useState(0);
   const [ratingFilter, setRatingFilter] = useState('above');
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredStar, setHoveredStar] = useState(0);
+
+  // Generate year options
+  const yearOptions = [];
+  for (let year = currentYear; year >= 1990; year--) {
+    yearOptions.push(year);
+  }
 
   // Mock data for games
   const featuredGames = [
@@ -53,18 +74,7 @@ const Discover = () => {
     { id: 19, title: 'Cyberpunk 2077', image: game1, rating: 4.2, year: '2020', genre: 'rpg', reason: 'Futuristic RPG experience' },
   ] : [];
 
-  const genres = [
-    { id: 'all', name: 'All Games', count: 150 },
-    { id: 'rpg', name: 'RPG', count: 45 },
-    { id: 'action', name: 'Action', count: 38 },
-    { id: 'adventure', name: 'Adventure', count: 22 },
-    { id: 'racing', name: 'Racing', count: 15 },
-    { id: 'horror', name: 'Horror', count: 12 },
-    { id: 'platformer', name: 'Platformer', count: 8 },
-    { id: 'fighting', name: 'Fighting', count: 10 },
-  ];
-
-  const filteredGames = selectedGenres.includes('all') 
+  const filteredGames = selectedGenres.length === genres.length
     ? featuredGames 
     : featuredGames.filter(game => selectedGenres.includes(game.genre));
 
@@ -148,25 +158,40 @@ const Discover = () => {
               {/* Year Range Dropdown */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="justify-between min-w-[130px]">
-                    {selectedYearRange === 'all' ? 'All time' : 
-                     selectedYearRange === 'before-2015' ? 'Before 2015' : selectedYearRange}
+                  <Button variant="outline" className="justify-between min-w-[150px]">
+                    {yearFrom === yearTo ? `${yearFrom}` : `${yearFrom} - ${yearTo}`}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
-                  <div className="space-y-1">
-                    {['all', '2024', '2023', '2022', '2021', '2020', '2015-2019', 'before-2015'].map((range) => (
-                      <button
-                        key={range}
-                        onClick={() => setSelectedYearRange(range)}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-accent ${
-                          selectedYearRange === range ? 'bg-accent' : ''
-                        }`}
-                      >
-                        {range === 'all' ? 'All time' : range === 'before-2015' ? 'Before 2015' : range}
-                      </button>
-                    ))}
+                <PopoverContent className="w-auto p-4" align="start">
+                  <div className="space-y-4">
+                    <div className="text-sm font-medium">Year Range</div>
+                    <div className="flex gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground">From</label>
+                        <select
+                          value={yearFrom}
+                          onChange={(e) => setYearFrom(Number(e.target.value))}
+                          className="w-20 p-2 rounded border border-input bg-background"
+                        >
+                          {yearOptions.map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs text-muted-foreground">To</label>
+                        <select
+                          value={yearTo}
+                          onChange={(e) => setYearTo(Number(e.target.value))}
+                          className="w-20 p-2 rounded border border-input bg-background"
+                        >
+                          {yearOptions.map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -181,35 +206,28 @@ const Discover = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-4" align="start">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <div key={star} className="flex">
-                          <button
-                            onClick={() => setSelectedRating(star - 0.5)}
-                            onMouseEnter={() => setHoveredStar(star - 0.5)}
-                            onMouseLeave={() => setHoveredStar(0)}
-                            className="p-1"
-                          >
-                            <StarHalf 
-                              className={`h-5 w-5 ${
-                                (hoveredStar >= star - 0.5 || selectedRating >= star - 0.5) 
-                                ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                              }`}
-                            />
-                          </button>
+                        <div key={star} className="relative">
                           <button
                             onClick={() => setSelectedRating(star)}
                             onMouseEnter={() => setHoveredStar(star)}
                             onMouseLeave={() => setHoveredStar(0)}
-                            className="p-1"
+                            className="p-1 relative"
                           >
                             <Star 
-                              className={`h-5 w-5 ${
+                              className={`h-6 w-6 ${
                                 (hoveredStar >= star || selectedRating >= star) 
                                 ? 'text-yellow-400 fill-current' : 'text-gray-300'
                               }`}
                             />
                           </button>
+                          <button
+                            onClick={() => setSelectedRating(star - 0.5)}
+                            onMouseEnter={() => setHoveredStar(star - 0.5)}
+                            onMouseLeave={() => setHoveredStar(0)}
+                            className="absolute left-1 top-1 w-3 h-6 bg-transparent"
+                          />
                         </div>
                       ))}
                     </div>
@@ -245,39 +263,52 @@ const Discover = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" className="justify-between min-w-[130px]">
-                    {selectedGenres.includes('all') ? 'All genres' : 
+                    {selectedGenres.length === genres.length ? 'All genres' : 
                      selectedGenres.length === 1 ? genres.find(g => g.id === selectedGenres[0])?.name :
                      `${selectedGenres.length} genres`}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
-                  <div className="space-y-1">
-                    {genres.map((genre) => (
+                <PopoverContent className="w-auto p-4" align="start">
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium">Select Genres</div>
+                    <div className="grid grid-cols-3 gap-2 max-w-xs">
+                      {genres.map((genre) => (
+                        <button
+                          key={genre.id}
+                          onClick={() => {
+                            const isSelected = selectedGenres.includes(genre.id);
+                            if (isSelected) {
+                              const newSelection = selectedGenres.filter(id => id !== genre.id);
+                              setSelectedGenres(newSelection.length === 0 ? genres.map(g => g.id) : newSelection);
+                            } else {
+                              setSelectedGenres([...selectedGenres, genre.id]);
+                            }
+                          }}
+                          className={`px-3 py-2 rounded-full text-xs font-medium transition-colors hover:bg-accent ${
+                            selectedGenres.includes(genre.id) 
+                              ? 'bg-primary text-primary-foreground' 
+                              : 'bg-secondary text-secondary-foreground'
+                          }`}
+                        >
+                          {genre.name}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 pt-2 border-t">
                       <button
-                        key={genre.id}
-                        onClick={() => {
-                          if (genre.id === 'all') {
-                            setSelectedGenres(['all']);
-                          } else {
-                            const newSelection = selectedGenres.includes('all') 
-                              ? [genre.id]
-                              : selectedGenres.includes(genre.id)
-                                ? selectedGenres.filter(id => id !== genre.id)
-                                : [...selectedGenres.filter(id => id !== 'all'), genre.id];
-                            setSelectedGenres(newSelection.length === 0 ? ['all'] : newSelection);
-                          }
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm hover:bg-accent flex items-center justify-between ${
-                          selectedGenres.includes(genre.id) ? 'bg-accent' : ''
-                        }`}
+                        onClick={() => setSelectedGenres(genres.map(g => g.id))}
+                        className="px-3 py-1 text-xs rounded hover:bg-accent"
                       >
-                        <span>{genre.name}</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {genre.count}
-                        </Badge>
+                        Select All
                       </button>
-                    ))}
+                      <button
+                        onClick={() => setSelectedGenres([])}
+                        className="px-3 py-1 text-xs rounded hover:bg-accent"
+                      >
+                        Clear All
+                      </button>
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -346,15 +377,12 @@ const Discover = () => {
                     variant={selectedGenres.includes(genre.id) ? "default" : "outline"}
                     size="sm"
                     onClick={() => {
-                      if (genre.id === 'all') {
-                        setSelectedGenres(['all']);
+                      const isSelected = selectedGenres.includes(genre.id);
+                      if (isSelected) {
+                        const newSelection = selectedGenres.filter(id => id !== genre.id);
+                        setSelectedGenres(newSelection.length === 0 ? genres.map(g => g.id) : newSelection);
                       } else {
-                        const newSelection = selectedGenres.includes('all') 
-                          ? [genre.id]
-                          : selectedGenres.includes(genre.id)
-                            ? selectedGenres.filter(id => id !== genre.id)
-                            : [...selectedGenres.filter(id => id !== 'all'), genre.id];
-                        setSelectedGenres(newSelection.length === 0 ? ['all'] : newSelection);
+                        setSelectedGenres([...selectedGenres, genre.id]);
                       }
                     }}
                     className="flex items-center gap-2"
