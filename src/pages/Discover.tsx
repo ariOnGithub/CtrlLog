@@ -165,14 +165,14 @@ const Discover = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-4" align="start">
                   <div className="space-y-4">
-                    <div className="text-sm font-medium">Year Range</div>
-                    <div className="flex gap-4">
+                    <div className="text-sm font-semibold">Year Range</div>
+                    <div className="flex gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs text-muted-foreground">From</label>
+                        <label className="text-sm font-medium text-foreground">From</label>
                         <select
                           value={yearFrom}
                           onChange={(e) => setYearFrom(Number(e.target.value))}
-                          className="w-20 p-2 rounded border border-input bg-background"
+                          className="w-24 p-2 rounded border border-input bg-background"
                         >
                           {yearOptions.map((year) => (
                             <option key={year} value={year}>{year}</option>
@@ -180,11 +180,11 @@ const Discover = () => {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs text-muted-foreground">To</label>
+                        <label className="text-sm font-medium text-foreground">To</label>
                         <select
                           value={yearTo}
                           onChange={(e) => setYearTo(Number(e.target.value))}
-                          className="w-20 p-2 rounded border border-input bg-background"
+                          className="w-24 p-2 rounded border border-input bg-background"
                         >
                           {yearOptions.map((year) => (
                             <option key={year} value={year}>{year}</option>
@@ -209,24 +209,31 @@ const Discover = () => {
                     <div className="flex items-center justify-center gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <div key={star} className="relative">
-                          <button
-                            onClick={() => setSelectedRating(star)}
-                            onMouseEnter={() => setHoveredStar(star)}
-                            onMouseLeave={() => setHoveredStar(0)}
-                            className="p-1 relative"
-                          >
-                            <Star 
-                              className={`h-6 w-6 ${
-                                (hoveredStar >= star || selectedRating >= star) 
-                                ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                              }`}
-                            />
-                          </button>
+                          <Star 
+                            className={`h-6 w-6 ${
+                              (hoveredStar >= star || selectedRating >= star) 
+                              ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
+                          />
+                          {/* Half star overlay */}
+                          {(hoveredStar >= star - 0.5 && hoveredStar < star) || (selectedRating >= star - 0.5 && selectedRating < star) ? (
+                            <div className="absolute inset-0 overflow-hidden w-1/2">
+                              <Star className="h-6 w-6 text-yellow-400 fill-current" />
+                            </div>
+                          ) : null}
+                          {/* Left half for half star */}
                           <button
                             onClick={() => setSelectedRating(star - 0.5)}
                             onMouseEnter={() => setHoveredStar(star - 0.5)}
                             onMouseLeave={() => setHoveredStar(0)}
-                            className="absolute left-1 top-1 w-3 h-6 bg-transparent"
+                            className="absolute left-0 top-0 w-1/2 h-full bg-transparent"
+                          />
+                          {/* Right half for full star */}
+                          <button
+                            onClick={() => setSelectedRating(star)}
+                            onMouseEnter={() => setHoveredStar(star)}
+                            onMouseLeave={() => setHoveredStar(0)}
+                            className="absolute right-0 top-0 w-1/2 h-full bg-transparent"
                           />
                         </div>
                       ))}
@@ -285,10 +292,10 @@ const Discover = () => {
                               setSelectedGenres([...selectedGenres, genre.id]);
                             }
                           }}
-                          className={`px-3 py-2 rounded-full text-xs font-medium transition-colors hover:bg-accent ${
+                          className={`px-4 py-3 rounded-full text-sm font-medium transition-colors ${
                             selectedGenres.includes(genre.id) 
-                              ? 'bg-primary text-primary-foreground' 
-                              : 'bg-secondary text-secondary-foreground'
+                              ? 'bg-green-500 text-white hover:bg-green-600' 
+                              : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                           }`}
                         >
                           {genre.name}
