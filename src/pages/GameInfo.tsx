@@ -132,20 +132,21 @@ const GameInfo = () => {
   };
 
   const renderStars = (rating: number, interactive = false) => {
+    // Determine star color based on rating
+    let starColor = 'text-green-500'; // 3.5-5
+    if (rating <= 2) {
+      starColor = 'text-red-500';
+    } else if (rating <= 3.5) {
+      starColor = 'text-yellow-500';
+    }
+    
     return (
       <div className="flex items-center justify-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => {
           const isFullStar = rating >= star;
-          const isPartialStar = rating >= star - 0.75 && rating < star;
-          const isQuarterStar = rating >= star - 1 && rating < star - 0.75;
-          const isHalfStar = rating >= star - 0.75 && rating < star - 0.25;
-          const isThreeQuarterStar = rating >= star - 0.25 && rating < star;
-          
-          let fillWidth = '0%';
-          if (isFullStar) fillWidth = '100%';
-          else if (isThreeQuarterStar) fillWidth = '75%';
-          else if (isHalfStar) fillWidth = '50%';
-          else if (isQuarterStar) fillWidth = '25%';
+          const partialAmount = rating - (star - 1);
+          const fillPercentage = Math.max(0, Math.min(100, partialAmount * 100));
+          const shouldShowFill = partialAmount > 0;
           
           return (
             <div key={star} className="relative">
@@ -155,12 +156,12 @@ const GameInfo = () => {
                 onMouseEnter={interactive ? () => setHoveredStar(star) : undefined}
                 onMouseLeave={interactive ? () => setHoveredStar(0) : undefined}
               />
-              {(isFullStar || isPartialStar) && (
+              {shouldShowFill && (
                 <div 
                   className="absolute inset-0 overflow-hidden"
-                  style={{ width: fillWidth }}
+                  style={{ width: `${fillPercentage}%` }}
                 >
-                  <Star className="h-5 w-5 text-primary fill-current" />
+                  <Star className={`h-5 w-5 ${starColor} fill-current`} />
                 </div>
               )}
             </div>
