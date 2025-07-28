@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import LogGame from "./pages/LogGame";
 import Discover from "./pages/Discover";
+import GameInfo from "./pages/GameInfo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -78,6 +79,7 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/discover" element={<Discover />} />
+            <Route path="/game/:gameId" element={<GameInfo />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

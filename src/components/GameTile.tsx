@@ -1,16 +1,18 @@
 import { Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface GameTileProps {
   title: string;
   image: string;
   rating?: number;
   year?: string;
+  gameId?: string;
 }
 
-const GameTile = ({ title, image, rating, year }: GameTileProps) => {
-  return (
+const GameTile = ({ title, image, rating, year, gameId }: GameTileProps) => {
+  const content = (
     <div className="game-tile group cursor-pointer">
-      <div className="aspect-[3/4] relative overflow-hidden">
+      <div className="aspect-[3/4] relative overflow-hidden rounded-lg">
         <img 
           src={image} 
           alt={title}
@@ -32,6 +34,16 @@ const GameTile = ({ title, image, rating, year }: GameTileProps) => {
       </div>
     </div>
   );
+
+  if (gameId) {
+    return (
+      <Link to={`/game/${gameId}`} className="block">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 };
 
 export default GameTile;

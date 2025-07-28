@@ -165,9 +165,9 @@ const Discover = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-4" align="start">
                   <div className="space-y-4">
-                    <div className="text-sm font-semibold">Year Range</div>
+                    <div className="text-base font-semibold underline decoration-cyan-400 decoration-2 underline-offset-4">Year Range</div>
                       <div className="flex gap-6">
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex items-center gap-3">
                           <label className="text-sm font-medium text-foreground">From</label>
                           <select
                             value={yearFrom}
@@ -179,7 +179,7 @@ const Discover = () => {
                             ))}
                           </select>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex items-center gap-3">
                           <label className="text-sm font-medium text-foreground">To</label>
                           <select
                             value={yearTo}
