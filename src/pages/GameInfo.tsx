@@ -133,24 +133,39 @@ const GameInfo = () => {
 
   const renderStars = (rating: number, interactive = false) => {
     return (
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <div key={star} className="relative">
-            <Star 
-              className={`h-5 w-5 ${
-                rating >= star ? 'text-yellow-400 fill-current' : 'text-gray-300'
-              } ${interactive ? 'cursor-pointer' : ''}`}
-              onClick={interactive ? () => setUserRating(star) : undefined}
-              onMouseEnter={interactive ? () => setHoveredStar(star) : undefined}
-              onMouseLeave={interactive ? () => setHoveredStar(0) : undefined}
-            />
-            {rating >= star - 0.5 && rating < star && (
-              <div className="absolute inset-0 overflow-hidden w-1/2">
-                <Star className="h-5 w-5 text-yellow-400 fill-current" />
-              </div>
-            )}
-          </div>
-        ))}
+      <div className="flex items-center justify-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFullStar = rating >= star;
+          const isPartialStar = rating >= star - 0.75 && rating < star;
+          const isQuarterStar = rating >= star - 1 && rating < star - 0.75;
+          const isHalfStar = rating >= star - 0.75 && rating < star - 0.25;
+          const isThreeQuarterStar = rating >= star - 0.25 && rating < star;
+          
+          let fillWidth = '0%';
+          if (isFullStar) fillWidth = '100%';
+          else if (isThreeQuarterStar) fillWidth = '75%';
+          else if (isHalfStar) fillWidth = '50%';
+          else if (isQuarterStar) fillWidth = '25%';
+          
+          return (
+            <div key={star} className="relative">
+              <Star 
+                className={`h-5 w-5 text-gray-300 ${interactive ? 'cursor-pointer' : ''}`}
+                onClick={interactive ? () => setUserRating(star) : undefined}
+                onMouseEnter={interactive ? () => setHoveredStar(star) : undefined}
+                onMouseLeave={interactive ? () => setHoveredStar(0) : undefined}
+              />
+              {(isFullStar || isPartialStar) && (
+                <div 
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ width: fillWidth }}
+                >
+                  <Star className="h-5 w-5 text-primary fill-current" />
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -214,6 +229,7 @@ const GameInfo = () => {
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
+                    <div className="text-sm text-muted-foreground mb-2">CtrlLog Community Rating</div>
                     <div className="text-3xl font-bold mb-2">{gameData.rating.average}</div>
                     {renderStars(gameData.rating.average)}
                     <div className="text-sm text-muted-foreground mt-1">
@@ -224,7 +240,9 @@ const GameInfo = () => {
                   {user && (
                     <div className="text-center border-l border-zinc-700 pl-6">
                       <div className="text-sm text-muted-foreground mb-2">Your Rating</div>
-                      {renderStars(hoveredStar || userRating, true)}
+                      <div className="flex justify-center">
+                        {renderStars(hoveredStar || userRating, true)}
+                      </div>
                       <div className="text-xs text-muted-foreground mt-1">
                         {userRating ? `${userRating} stars` : 'Not rated'}
                       </div>
@@ -298,7 +316,7 @@ const GameInfo = () => {
                 </p>
                 <Button 
                   variant="link" 
-                  className="p-0 h-auto mt-2 text-cyan-400 hover:text-cyan-300"
+                  className="p-0 h-auto mt-2 text-primary hover:text-primary/80"
                   onClick={() => setShowFullDescription(!showFullDescription)}
                 >
                   {showFullDescription ? 'Show less' : 'Show more'}
@@ -312,7 +330,7 @@ const GameInfo = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Calendar className="mr-2 h-5 w-5 text-cyan-400" />
+                    <Calendar className="mr-2 h-5 w-5 text-primary" />
                     Release Info
                   </CardTitle>
                 </CardHeader>
@@ -335,7 +353,7 @@ const GameInfo = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Clock className="mr-2 h-5 w-5 text-cyan-400" />
+                    <Clock className="mr-2 h-5 w-5 text-primary" />
                     Play Time
                   </CardTitle>
                 </CardHeader>
@@ -354,7 +372,7 @@ const GameInfo = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <Trophy className="mr-2 h-5 w-5 text-cyan-400" />
+                    <Trophy className="mr-2 h-5 w-5 text-primary" />
                     Achievements
                   </CardTitle>
                 </CardHeader>
@@ -520,7 +538,7 @@ const GameInfo = () => {
                         key={index}
                         onClick={() => setActiveMediaIndex(index)}
                         className={`aspect-video rounded-lg overflow-hidden border-2 transition-colors ${
-                          activeMediaIndex === index ? 'border-cyan-400' : 'border-transparent'
+                          activeMediaIndex === index ? 'border-primary' : 'border-transparent'
                         }`}
                       >
                         <img 
@@ -587,16 +605,16 @@ const GameInfo = () => {
                       const percentage = (count / gameData.rating.count) * 100;
                       return (
                         <div key={stars} className="flex items-center gap-3">
-                          <div className="flex items-center gap-1 w-12">
-                            <span className="text-sm">{stars}</span>
-                            <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                          </div>
-                          <div className="flex-1 bg-muted rounded-full h-2">
-                            <div 
-                              className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
+                           <div className="flex items-center gap-1 w-12">
+                             <span className="text-sm">{stars}</span>
+                             <Star className="h-3 w-3 text-primary fill-current" />
+                           </div>
+                           <div className="flex-1 bg-muted rounded-full h-2">
+                             <div 
+                               className="bg-primary h-2 rounded-full transition-all duration-300"
+                               style={{ width: `${percentage}%` }}
+                             />
+                           </div>
                           <span className="text-sm text-muted-foreground w-16 text-right">
                             {count.toLocaleString()}
                           </span>
