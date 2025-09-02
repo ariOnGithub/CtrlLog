@@ -35,9 +35,9 @@ const Profile = () => {
 
   // Mock data for tabs
   const diaryEntries = [
-    { title: 'Cyberpunk 2077', date: '2024-01-15', rating: 4, image: game1 },
-    { title: 'Elden Ring', date: '2024-01-10', rating: 5, image: game2 },
-    { title: 'Gran Turismo 7', date: '2024-01-05', rating: 4, image: game3 },
+    { id: 1, title: 'Cyberpunk 2077', date: '2024-01-15', rating: 4, image: game1 },
+    { id: 2, title: 'Elden Ring', date: '2024-01-10', rating: 5, image: game2 },
+    { id: 3, title: 'Gran Turismo 7', date: '2024-01-05', rating: 4, image: game3 },
   ];
 
   const reviews = [
@@ -237,13 +237,14 @@ const Profile = () => {
 
           <TabsContent value="ratings" className="mt-6">
             <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4">
-              {diaryEntries.map((game, index) => (
+              {diaryEntries.map((game) => (
                 <GameTile
-                  key={index}
+                  key={game.id}
                   title={game.title}
                   image={game.image}
                   rating={game.rating}
                   year="2022"
+                  gameId={game.id.toString()}
                 />
               ))}
             </div>

@@ -12,12 +12,12 @@ import game3 from "@/assets/game-3.jpg";
 const Index = () => {
   const { user } = useAuth();
   const featuredGames = [
-    { title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
-    { title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
-    { title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
-    { title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
-    { title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
-    { title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
+    { id: 1, title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
+    { id: 2, title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
+    { id: 3, title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
+    { id: 4, title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
+    { id: 5, title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
+    { id: 6, title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
   ];
 
   return (
@@ -82,13 +82,14 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
-            {featuredGames.map((game, index) => (
+            {featuredGames.map((game) => (
               <GameTile
-                key={index}
+                key={game.id}
                 title={game.title}
                 image={game.image}
                 rating={game.rating}
                 year={game.year}
+                gameId={game.id.toString()}
               />
             ))}
           </div>

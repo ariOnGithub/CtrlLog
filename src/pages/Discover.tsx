@@ -105,6 +105,7 @@ const Discover = () => {
                   image={game.image}
                   rating={game.rating}
                   year={game.year}
+                  gameId={game.id.toString()}
                 />
               ))}
             </div>
@@ -129,6 +130,7 @@ const Discover = () => {
                         image={game.image}
                         rating={game.rating}
                         year={game.year}
+                        gameId={game.id.toString()}
                       />
                       <p className="text-base text-muted-foreground mt-2 text-center">{game.reason}</p>
                     </div>
@@ -355,6 +357,7 @@ const Discover = () => {
                   image={game.image}
                   rating={game.rating}
                   year={game.year}
+                  gameId={game.id.toString()}
                 />
               ))}
             </div>
@@ -369,6 +372,7 @@ const Discover = () => {
                   image={game.image}
                   rating={game.rating}
                   year={game.year}
+                  gameId={game.id.toString()}
                 />
               ))}
             </div>
@@ -411,6 +415,7 @@ const Discover = () => {
                   image={game.image}
                   rating={game.rating}
                   year={game.year}
+                  gameId={game.id.toString()}
                 />
               ))}
             </div>
