@@ -3,19 +3,21 @@ import GameTile from "@/components/GameTile";
 import FeatureCard from "@/components/FeatureCard";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Users, Gamepad2, Trophy, MessageSquare, Link, Zap } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import heroImage from "@/assets/hero-gaming.jpg";
 import game1 from "@/assets/game-1.jpg";
 import game2 from "@/assets/game-2.jpg";
 import game3 from "@/assets/game-3.jpg";
 
 const Index = () => {
+  const { user } = useAuth();
   const featuredGames = [
-    { title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
-    { title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
-    { title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
-    { title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
-    { title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
-    { title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
+    { id: 1, title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
+    { id: 2, title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
+    { id: 3, title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
+    { id: 4, title: "Cyberpunk 2077", image: game1, rating: 4.2, year: "2020" },
+    { id: 5, title: "Elden Ring", image: game2, rating: 4.8, year: "2022" },
+    { id: 6, title: "Gran Turismo 7", image: game3, rating: 4.1, year: "2022" },
   ];
 
   return (
@@ -36,16 +38,34 @@ const Index = () => {
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
           <div className="max-w-3xl">
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-              Track Your Games.{" "}
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Share Your Journey.
-              </span>
+              {user ? (
+                <>
+                  Welcome back,{" "}
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {user.user_metadata?.username || 'Gamer'}!
+                  </span>
+                </>
+              ) : (
+                <>
+                  Track Your Games.{" "}
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Share Your Journey.
+                  </span>
+                </>
+              )}
             </h1>
             <p className="text-xl lg:text-2xl text-muted-foreground mb-8 leading-relaxed">
-              Discover, log, and showcase your entire gaming history. Connect with fellow gamers and never lose track of your adventures.
+              {user ? (
+                "Ready to continue your gaming adventures? Check out your personalized dashboard and discover what's trending."
+              ) : (
+                "Discover, log, and showcase your entire gaming history. Connect with fellow gamers and never lose track of your adventures."
+              )}
             </p>
-            <Button className="hero-button text-lg px-10 py-6">
-              Get Started for Free
+            <Button 
+              className="hero-button text-lg px-10 py-6"
+              onClick={() => window.location.href = user ? '/dashboard' : '/auth'}
+            >
+              {user ? 'Your Dashboard' : 'Get Started for Free'}
             </Button>
           </div>
         </div>
@@ -62,13 +82,14 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
-            {featuredGames.map((game, index) => (
+            {featuredGames.map((game) => (
               <GameTile
-                key={index}
+                key={game.id}
                 title={game.title}
                 image={game.image}
                 rating={game.rating}
                 year={game.year}
+                gameId={game.id.toString()}
               />
             ))}
           </div>
@@ -143,18 +164,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 lg:py-24 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Ready to Start Your Gaming Journey?</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
-            Join thousands of gamers who are already tracking their adventures with CtrlLog
-          </p>
-          <Button className="hero-button text-lg px-10 py-6">
-            Create Your Account
-          </Button>
-        </div>
-      </section>
+      {/* CTA Section - Only show for non-logged in users */}
+      {!user && (
+        <section className="py-16 lg:py-24 bg-gradient-to-r from-primary/10 to-secondary/10">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Ready to Start Your Gaming Journey?</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+              Join thousands of gamers who are already tracking their adventures with CtrlLog
+            </p>
+            <Button 
+              className="hero-button text-lg px-10 py-6"
+              onClick={() => window.location.href = '/auth'}
+            >
+              Create Your Account
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-border py-12">

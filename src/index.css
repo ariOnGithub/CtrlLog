@@ -138,7 +138,7 @@
   
   .hero-button {
     @apply relative px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold;
-    @apply transition-all duration-300 hover:scale-105;
+    @apply transition-all duration-300 hover:scale-105 hover:bg-green-600;
     background: var(--gradient-primary);
     box-shadow: var(--glow-primary);
   }
@@ -154,9 +154,6 @@
   }
   
   .nav-link {
-    @apply relative text-foreground/80 hover:text-foreground transition-colors;
-    @apply after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0;
-    @apply after:bg-primary after:transition-all after:duration-300;
-    @apply hover:after:w-full;
+    @apply relative text-foreground/80 hover:text-primary transition-colors;
   }
 }
