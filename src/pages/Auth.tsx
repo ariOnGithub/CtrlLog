@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,12 +10,22 @@ import { useToast } from '@/hooks/use-toast';
 import { Gamepad2 } from 'lucide-react';
 
 const Auth = () => {
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('signin');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'signup') {
+      setActiveTab('signup');
+    }
+  }, [searchParams]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +36,7 @@ const Auth = () => {
         email,
         password,
         options: {
-          emailRedirectTo: 'http://localhost:5173/',
+          emailRedirectTo: window.location.origin,
           data: {
             username,
             display_name: username,
@@ -56,8 +66,42 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      let emailToUse = emailOrUsername;
+
+      // Check if input is email format
+      const isEmail = emailOrUsername.includes('@');
+
+      if (!isEmail) {
+        // If it's not an email, treat it as username and fetch the associated user_id
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('user_id')
+          .eq('username', emailOrUsername)
+          .single();
+
+        if (profileError || !profile) {
+          throw new Error('Username not found');
+        }
+
+        // Query the auth.users table to get the email (through the user metadata or by checking the auth context)
+        // Since we can't directly access auth.users from client, we'll need to store email in profiles or use a different approach
+        // For now, let's use the Supabase RPC or create a function
+        // Alternative: Store email in profiles table during signup
+        const { data: userProfile, error: emailError } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('user_id', profile.user_id)
+          .single();
+
+        if (emailError || !userProfile?.email) {
+          throw new Error('Could not retrieve user email. Please use your email to sign in.');
+        }
+
+        emailToUse = userProfile.email;
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: emailToUse,
         password,
       });
 
@@ -67,7 +111,7 @@ const Auth = () => {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || 'Failed to sign in',
         variant: "destructive",
       });
     } finally {
@@ -88,7 +132,7 @@ const Auth = () => {
           <p className="text-muted-foreground">Join the gaming community</p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -105,12 +149,13 @@ const Auth = () => {
               <CardContent>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="emailOrUsername">Email or Username</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="emailOrUsername"
+                      type="text"
+                      placeholder="Enter your email or username"
+                      value={emailOrUsername}
+                      onChange={(e) => setEmailOrUsername(e.target.value)}
                       required
                     />
                   </div>

@@ -74,7 +74,10 @@ const Header = () => {
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut}>
+                <DropdownMenuItem onClick={async () => {
+                  await signOut();
+                  navigate('/');
+                }}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sign out</span>
                 </DropdownMenuItem>
@@ -85,13 +88,17 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 className="hidden md:flex nav-link"
-                onClick={() => navigate('/auth')}
+                onClick={() => {
+                  window.location.href = '/auth';
+                }}
               >
                 Log In
               </Button>
               <Button 
                 className="hero-button text-sm px-6 py-2"
-                onClick={() => navigate('/auth')}
+                onClick={() => {
+                  window.location.href = '/auth?tab=signup';
+                }}
               >
                 Sign Up
               </Button>
